@@ -1,6 +1,11 @@
-node_modules/
-.env
-*.log
-dist/
-.venv/
+# Large PDF scans (stored on NAS, not in git)
+scans/*.pdf
+
+# Model caches
 __pycache__/
+*.pyc
+.venv/
+
+# Large output files (regenerable)
+scans/output/*/
+scans/test_pages/
