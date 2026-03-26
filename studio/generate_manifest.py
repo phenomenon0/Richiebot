@@ -110,7 +110,7 @@ MODEL_META = {
 }
 
 # Models to skip (empty/broken beyond repair)
-SKIP_MODELS = {"got_ocr", "paddleocr_vl", "parallel_test", "surya"}
+SKIP_MODELS = {"got_ocr", "paddleocr_vl", "parallel_test", "surya", "pipeline"}
 
 
 def parse_page_id(filename):
@@ -246,6 +246,7 @@ def generate_from_sqlite():
         conn.close()
         return None
 
+    models_seen = set()
     pages = []
     for row in c.execute("""SELECT pdf_name, page_num, image_path, class, class_confidence,
                                    rotation_hint, model_used, text, chars, time_sec, quality_score, status
@@ -264,32 +265,42 @@ def generate_from_sqlite():
             "outputs": {},
         })
         if row['status'] == 'done' and row['text']:
-            # Write text to a file for the studio to fetch
-            out_dir = os.path.join(os.path.dirname(__file__), "..", "scans", "output", "pipeline")
+            model_id = (row['model_used'] or 'unknown').replace('.', '_').replace(':', '_')
+            out_dir = os.path.join(os.path.dirname(__file__), "..", "scans", "output", f"batch_{model_id}")
             os.makedirs(out_dir, exist_ok=True)
             txt_path = os.path.join(out_dir, f"{page_id}.txt")
             with open(txt_path, "w") as f:
                 f.write(row['text'])
-            pages[-1]["outputs"]["pipeline"] = {
-                "textPath": f"../scans/output/pipeline/{page_id}.txt",
+            pages[-1]["outputs"][f"batch_{model_id}"] = {
+                "textPath": f"../scans/output/batch_{model_id}/{page_id}.txt",
                 "chars": row['chars'],
                 "timeSec": row['time_sec'],
                 "format": "txt",
-                "model": row['model_used'],
                 "qualityScore": row['quality_score'],
                 "rotation": row['rotation_hint'] if row['rotation_hint'] else None,
+                "pageClass": row['class'],
             }
+            models_seen.add(model_id)
 
     conn.close()
 
-    models = [{
-        "id": "pipeline",
-        "name": "Pipeline (routed)",
-        "params": None,
-        "vram": None,
-        "type": "pipeline",
-        "description": "Classify→Route: typed→Marker, HW→MiniCPM-V, hardest→Chandra",
-    }]
+    MODEL_DISPLAY = {
+        "minicpm-v": ("MiniCPM-V (batch)", "4B", "5.5GB", "Handwritten pages via Ollama"),
+        "chandra_ocr2": ("Chandra OCR 2 (batch)", "4B", "15.3GB", "Hardest pages + rotation"),
+        "qwen2_5vl_7b": ("Qwen2.5-VL (batch)", "7B", "22.8GB", "Fallback / typed pages"),
+        "marker": ("Marker (batch)", None, "4GB", "Typed pages via pdftext"),
+    }
+    models = []
+    for mid in sorted(models_seen):
+        display = MODEL_DISPLAY.get(mid, (mid, None, None, ""))
+        models.append({
+            "id": f"batch_{mid}",
+            "name": display[0],
+            "params": display[1],
+            "vram": display[2],
+            "type": "batch",
+            "description": display[3],
+        })
 
     return {
         "generated": datetime.now(timezone.utc).isoformat(),
@@ -298,7 +309,10 @@ def generate_from_sqlite():
         "stats": {
             "totalPages": len(pages),
             "totalModels": len(models),
-            "coverageMatrix": {"pipeline": sum(1 for p in pages if "pipeline" in p["outputs"])},
+            "coverageMatrix": {
+                m["id"]: sum(1 for p in pages if m["id"] in p["outputs"])
+                for m in models
+            },
         },
     }
 
@@ -367,8 +381,9 @@ def main():
 
     # Merge SQLite pipeline results if available
     if sqlite_manifest:
-        # Add pipeline model
-        models.append(sqlite_manifest["models"][0])
+        # Add batch models
+        for m in sqlite_manifest["models"]:
+            models.append(m)
         # Add pipeline pages that aren't in test_pages (the full 369)
         existing_ids = {p["id"] for p in pages}
         for sp in sqlite_manifest["pages"]:
@@ -386,7 +401,8 @@ def main():
                     rel = os.path.relpath(abs_path, os.path.join(os.path.dirname(__file__), ".."))
                     sp["imagePath"] = f"../{rel}"
                 pages.append(sp)
-        print(f"  Merged {sqlite_manifest['stats']['coverageMatrix'].get('pipeline', 0)} pipeline results from SQLite")
+        total_merged = sum(sqlite_manifest['stats']['coverageMatrix'].values())
+        print(f"  Merged {total_merged} batch results from SQLite ({len(sqlite_manifest['models'])} models)")
 
     # Build manifest
     manifest = {
