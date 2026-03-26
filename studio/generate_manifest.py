@@ -229,7 +229,89 @@ def find_standard_output(model_id, page_id, summary_data):
     return result
 
 
+def generate_from_sqlite():
+    """Generate manifest from SQLite database (batch pipeline results)."""
+    import sqlite3
+    db_path = os.path.join(os.path.dirname(__file__), "..", "data", "richiebot.db")
+    if not os.path.exists(db_path):
+        return None
+
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+
+    # Check if we have processed pages
+    count = c.execute("SELECT COUNT(*) FROM pages WHERE status = 'done'").fetchone()[0]
+    if count == 0:
+        conn.close()
+        return None
+
+    pages = []
+    for row in c.execute("""SELECT pdf_name, page_num, image_path, class, class_confidence,
+                                   rotation_hint, model_used, text, chars, time_sec, quality_score, status
+                            FROM pages ORDER BY pdf_name, page_num"""):
+        page_id = f"{safe_name(row['pdf_name'])}_p{row['page_num']}"
+        difficulty_map = {"typed": "Easy", "handwritten": "Medium", "hardest": "Very Hard",
+                          "diagram": "Medium", "blank": "Skip"}
+        pages.append({
+            "id": page_id,
+            "filename": f"p{row['page_num']}.png",
+            "imagePath": row['image_path'] if row['image_path'] else "",
+            "sourcePdf": row['pdf_name'],
+            "pageNum": row['page_num'],
+            "difficulty": difficulty_map.get(row['class'], "Unknown"),
+            "category": row['class'] or "unknown",
+            "outputs": {},
+        })
+        if row['status'] == 'done' and row['text']:
+            # Write text to a file for the studio to fetch
+            out_dir = os.path.join(os.path.dirname(__file__), "..", "scans", "output", "pipeline")
+            os.makedirs(out_dir, exist_ok=True)
+            txt_path = os.path.join(out_dir, f"{page_id}.txt")
+            with open(txt_path, "w") as f:
+                f.write(row['text'])
+            pages[-1]["outputs"]["pipeline"] = {
+                "textPath": f"../scans/output/pipeline/{page_id}.txt",
+                "chars": row['chars'],
+                "timeSec": row['time_sec'],
+                "format": "txt",
+                "model": row['model_used'],
+                "qualityScore": row['quality_score'],
+                "rotation": row['rotation_hint'] if row['rotation_hint'] else None,
+            }
+
+    conn.close()
+
+    models = [{
+        "id": "pipeline",
+        "name": "Pipeline (routed)",
+        "params": None,
+        "vram": None,
+        "type": "pipeline",
+        "description": "Classify→Route: typed→Marker, HW→MiniCPM-V, hardest→Chandra",
+    }]
+
+    return {
+        "generated": datetime.now(timezone.utc).isoformat(),
+        "models": models,
+        "pages": pages,
+        "stats": {
+            "totalPages": len(pages),
+            "totalModels": len(models),
+            "coverageMatrix": {"pipeline": sum(1 for p in pages if "pipeline" in p["outputs"])},
+        },
+    }
+
+
+def safe_name(pdf_name):
+    """Convert PDF name to safe ID."""
+    return pdf_name.replace(".pdf", "").replace(" ", "_").replace("&", "and").replace("(", "").replace(")", "")
+
+
 def main():
+    # Try SQLite first (batch pipeline results)
+    sqlite_manifest = generate_from_sqlite()
+
     # Discover test pages
     pages = []
     for png in sorted(glob.glob(os.path.join(TEST_PAGES_DIR, "*.png"))):
@@ -282,6 +364,29 @@ def main():
 
             if output:
                 page["outputs"][model_dir_name] = output
+
+    # Merge SQLite pipeline results if available
+    if sqlite_manifest:
+        # Add pipeline model
+        models.append(sqlite_manifest["models"][0])
+        # Add pipeline pages that aren't in test_pages (the full 369)
+        existing_ids = {p["id"] for p in pages}
+        for sp in sqlite_manifest["pages"]:
+            if sp["id"] in existing_ids:
+                # Merge pipeline output into existing test page
+                for p in pages:
+                    if p["id"] == sp["id"]:
+                        p["outputs"].update(sp["outputs"])
+                        break
+            else:
+                # New page from batch pipeline — fix image path for studio
+                # Image path from SQLite is absolute, make relative
+                abs_path = sp["imagePath"]
+                if abs_path and os.path.isabs(abs_path):
+                    rel = os.path.relpath(abs_path, os.path.join(os.path.dirname(__file__), ".."))
+                    sp["imagePath"] = f"../{rel}"
+                pages.append(sp)
+        print(f"  Merged {sqlite_manifest['stats']['coverageMatrix'].get('pipeline', 0)} pipeline results from SQLite")
 
     # Build manifest
     manifest = {
