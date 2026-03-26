@@ -633,17 +633,15 @@ body {
     const vp = $('#image-viewport');
     const img = $('#source-image');
 
-    // Wheel zoom
+    // Wheel zoom (centered)
     vp.addEventListener('wheel', e => {
       e.preventDefault();
-      const rect = vp.getBoundingClientRect();
-      const mx = e.clientX - rect.left;
-      const my = e.clientY - rect.top;
       const delta = e.deltaY > 0 ? -0.1 : 0.1;
       const newScale = Math.max(0.05, Math.min(15, state.zoom.scale * (1 + delta)));
+      // Scale pan offset proportionally so the view center stays stable
       const ratio = newScale / state.zoom.scale;
-      state.zoom.tx = mx - ratio * (mx - state.zoom.tx);
-      state.zoom.ty = my - ratio * (my - state.zoom.ty);
+      state.zoom.tx *= ratio;
+      state.zoom.ty *= ratio;
       state.zoom.scale = newScale;
       updateTransform();
     }, { passive: false });
@@ -681,7 +679,7 @@ body {
     $('#btn-zoom-fit').addEventListener('click', fitImage);
     $('#btn-rotate').addEventListener('click', () => {
       state.zoom.rotation = (state.zoom.rotation + 90) % 360;
-      updateTransform();
+      fitImage();
     });
   }
 
@@ -690,19 +688,45 @@ body {
     const img = $('#source-image');
     if (!img.naturalWidth) return;
     const pad = 24;
-    const scaleX = (vp.clientWidth - pad) / img.naturalWidth;
-    const scaleY = (vp.clientHeight - pad) / img.naturalHeight;
+    const rot = state.zoom.rotation;
+    const sideways = rot === 90 || rot === 270;
+    const fitW = sideways ? img.naturalHeight : img.naturalWidth;
+    const fitH = sideways ? img.naturalWidth : img.naturalHeight;
+    const scaleX = (vp.clientWidth - pad) / fitW;
+    const scaleY = (vp.clientHeight - pad) / fitH;
     state.zoom.scale = Math.min(scaleX, scaleY, 1);
-    state.zoom.tx = (vp.clientWidth - img.naturalWidth * state.zoom.scale) / 2;
-    state.zoom.ty = (vp.clientHeight - img.naturalHeight * state.zoom.scale) / 2;
+    state.zoom.tx = 0;
+    state.zoom.ty = 0;
     updateTransform();
   }
 
   function updateTransform() {
     const img = $('#source-image');
-    const rot = state.zoom.rotation;
-    img.style.transform = `translate(${state.zoom.tx}px, ${state.zoom.ty}px) scale(${state.zoom.scale}) rotate(${rot}deg)`;
-    const pct = Math.round(state.zoom.scale * 100);
+    const vp = $('#image-viewport');
+    const { scale: s, tx, ty, rotation: r } = state.zoom;
+    const w = img.naturalWidth || 1;
+    const h = img.naturalHeight || 1;
+    const sideways = r === 90 || r === 270;
+    const visW = (sideways ? h : w) * s;
+    const visH = (sideways ? w : h) * s;
+
+    // Center the visible (post-rotation) bounding box in the viewport
+    const cx = (vp.clientWidth - visW) / 2 + tx;
+    const cy = (vp.clientHeight - visH) / 2 + ty;
+
+    // With transform-origin: 0 0, rotation pivots around top-left of the
+    // scaled image. We need to offset so the rotated result lands at (cx, cy).
+    // After scale+rotate with origin 0,0:
+    //   0° → top-left stays at origin, bounding box = (0,0) to (w*s, h*s)
+    //  90° → top-left moves to (0, -w*s)... bounding box needs +w*s on y? No...
+    // Simpler: compute where the top-left of the bounding box ends up.
+    let ox = cx, oy = cy;
+    if (r === 90)  { ox = cx + visW; oy = cy; }       // rotated top-left is at (h*s, 0) from bb origin
+    if (r === 180) { ox = cx + visW; oy = cy + visH; }
+    if (r === 270) { ox = cx; oy = cy + visH; }
+
+    img.style.transform = `translate(${ox}px, ${oy}px) scale(${s}) rotate(${r}deg)`;
+    const pct = Math.round(s * 100);
     $('#zoom-display').textContent = pct + '%';
   }
 
