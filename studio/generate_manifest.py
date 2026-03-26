@@ -86,10 +86,24 @@ MODEL_META = {
         "type": "vlm",
         "description": "Broken on Ollama — empty outputs",
     },
+    "trocr_handwritten": {
+        "name": "TrOCR-Large HW",
+        "params": "660M",
+        "vram": "2.4GB",
+        "type": "specialized",
+        "description": "Line-level handwriting specialist, 2.89% CER on IAM",
+    },
+    "deepseek_ocr2": {
+        "name": "DeepSeek-OCR-2",
+        "params": "3B",
+        "vram": "6.7GB",
+        "type": "vlm",
+        "description": "Broken on Ollama — echoes prompt back",
+    },
 }
 
 # Models to skip (empty/broken beyond repair)
-SKIP_MODELS = {"got_ocr", "paddleocr_vl", "parallel_test"}
+SKIP_MODELS = {"got_ocr", "paddleocr_vl", "parallel_test", "surya"}
 
 
 def parse_page_id(filename):

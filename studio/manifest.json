@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-26T01:13:13.461608+00:00",
+  "generated": "2026-03-26T03:32:46.118304+00:00",
   "models": [
     {
       "id": "chandra_ocr2",
@@ -16,6 +16,14 @@
       "vram": null,
       "type": "pipeline",
       "description": "Multi-rotation + region decomposition"
+    },
+    {
+      "id": "deepseek_ocr2",
+      "name": "DeepSeek-OCR-2",
+      "params": "3B",
+      "vram": "6.7GB",
+      "type": "vlm",
+      "description": "Broken on Ollama \u2014 echoes prompt back"
     },
     {
       "id": "glm_ocr",
@@ -48,6 +56,14 @@
       "vram": "22.8GB",
       "type": "vlm",
       "description": "Best tables (A-), September 2024"
+    },
+    {
+      "id": "trocr_handwritten",
+      "name": "TrOCR-Large HW",
+      "params": "660M",
+      "vram": "2.4GB",
+      "type": "specialized",
+      "description": "Line-level handwriting specialist, 2.89% CER on IAM"
     }
   ],
   "pages": [
@@ -67,6 +83,12 @@
           "timeSec": null,
           "format": "txt"
         },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/B_-_Notes1_p1.txt",
+          "chars": 0,
+          "timeSec": 5.43,
+          "format": "txt"
+        },
         "marker": {
           "textPath": "../scans/output/marker/B - Notes(1)/B - Notes(1).md",
           "chars": 97109,
@@ -74,6 +96,12 @@
           "format": "md",
           "wholeDocument": true,
           "pageNum": 1
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/B_-_Notes1_p1.txt",
+          "chars": 262,
+          "timeSec": 1.52,
+          "format": "txt"
         }
       }
     },
@@ -93,6 +121,12 @@
           "timeSec": null,
           "format": "txt"
         },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/B_-_Notes1_p2.txt",
+          "chars": 0,
+          "timeSec": 0.99,
+          "format": "txt"
+        },
         "marker": {
           "textPath": "../scans/output/marker/B - Notes(1)/B - Notes(1).md",
           "chars": 97109,
@@ -100,6 +134,12 @@
           "format": "md",
           "wholeDocument": true,
           "pageNum": 2
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/B_-_Notes1_p2.txt",
+          "chars": 68,
+          "timeSec": 0.26,
+          "format": "txt"
         }
       }
     },
@@ -117,6 +157,12 @@
           "textPath": "../scans/output/chandra_ocr2/B_-_The_Keys_to_Demand_Generation_p1.txt",
           "chars": 4443,
           "timeSec": 32.69,
+          "format": "txt"
+        },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/B_-_The_Keys_to_Demand_Generation_p1.txt",
+          "chars": 0,
+          "timeSec": 1.24,
           "format": "txt"
         },
         "glm_ocr": {
@@ -144,6 +190,12 @@
           "chars": 4167,
           "timeSec": 19.71,
           "format": "txt"
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/B_-_The_Keys_to_Demand_Generation_p1.txt",
+          "chars": 1972,
+          "timeSec": 3.06,
+          "format": "txt"
         }
       }
     },
@@ -161,6 +213,12 @@
           "textPath": "../scans/output/chandra_ocr2/R_-_Org_Charts_p1.txt",
           "chars": 5235,
           "timeSec": 56.85,
+          "format": "txt"
+        },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/R_-_Org_Charts_p1.txt",
+          "chars": 0,
+          "timeSec": 1.12,
           "format": "txt"
         },
         "glm_ocr": {
@@ -187,6 +245,12 @@
           "textPath": "../scans/output/qwen25vl_7b/R_-_Org_Charts_p1.txt",
           "chars": 7329,
           "timeSec": 46.0,
+          "format": "txt"
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/R_-_Org_Charts_p1.txt",
+          "chars": 76,
+          "timeSec": 0.25,
           "format": "txt"
         }
       }
@@ -216,6 +280,12 @@
           "qualityScore": 72.62318840579711,
           "strategy": "full_page"
         },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/R_-_Org_Charts_p2.txt",
+          "chars": 0,
+          "timeSec": 1.13,
+          "format": "txt"
+        },
         "glm_ocr": {
           "textPath": "../scans/output/glm_ocr/R_-_Org_Charts_p2.txt",
           "chars": 33,
@@ -241,6 +311,12 @@
           "chars": 841,
           "timeSec": 7.87,
           "format": "txt"
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/R_-_Org_Charts_p2.txt",
+          "chars": 57,
+          "timeSec": 0.28,
+          "format": "txt"
         }
       }
     },
@@ -258,6 +334,12 @@
           "textPath": "../scans/output/chandra_ocr2/R_-_Presenataions_p9.txt",
           "chars": 2381,
           "timeSec": 30.16,
+          "format": "txt"
+        },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/R_-_Presenataions_p9.txt",
+          "chars": 0,
+          "timeSec": 1.17,
           "format": "txt"
         },
         "glm_ocr": {
@@ -285,6 +367,12 @@
           "chars": 1979,
           "timeSec": 9.8,
           "format": "txt"
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/R_-_Presenataions_p9.txt",
+          "chars": 1502,
+          "timeSec": 2.67,
+          "format": "txt"
         }
       }
     },
@@ -302,6 +390,12 @@
           "textPath": "../scans/output/chandra_ocr2/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p1.txt",
           "chars": 3565,
           "timeSec": 29.64,
+          "format": "txt"
+        },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p1.txt",
+          "chars": 0,
+          "timeSec": 1.26,
           "format": "txt"
         },
         "glm_ocr": {
@@ -329,6 +423,12 @@
           "chars": 3247,
           "timeSec": 12.05,
           "format": "txt"
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p1.txt",
+          "chars": 2206,
+          "timeSec": 3.6,
+          "format": "txt"
         }
       }
     },
@@ -346,6 +446,12 @@
           "textPath": "../scans/output/chandra_ocr2/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3.txt",
           "chars": 2072,
           "timeSec": 23.71,
+          "format": "txt"
+        },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3.txt",
+          "chars": 0,
+          "timeSec": 1.25,
           "format": "txt"
         },
         "glm_ocr": {
@@ -372,6 +478,12 @@
           "textPath": "../scans/output/qwen25vl_7b/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3.txt",
           "chars": 1865,
           "timeSec": 9.25,
+          "format": "txt"
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3.txt",
+          "chars": 1255,
+          "timeSec": 3.27,
           "format": "txt"
         }
       }
@@ -401,6 +513,12 @@
           "qualityScore": 73.7128712871287,
           "strategy": "full_page"
         },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/R_-_Written_Notes_p1.txt",
+          "chars": 18978,
+          "timeSec": 14.28,
+          "format": "txt"
+        },
         "glm_ocr": {
           "textPath": "../scans/output/glm_ocr/R_-_Written_Notes_p1.txt",
           "chars": 33,
@@ -425,6 +543,12 @@
           "textPath": "../scans/output/qwen25vl_7b/R_-_Written_Notes_p1.txt",
           "chars": 14742,
           "timeSec": 45.86,
+          "format": "txt"
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/R_-_Written_Notes_p1.txt",
+          "chars": 10,
+          "timeSec": 0.09,
           "format": "txt"
         }
       }
@@ -454,6 +578,12 @@
           "qualityScore": 74.23076923076923,
           "strategy": "full_page"
         },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/R_-_Written_Notes_p3.txt",
+          "chars": 0,
+          "timeSec": 1.36,
+          "format": "txt"
+        },
         "glm_ocr": {
           "textPath": "../scans/output/glm_ocr/R_-_Written_Notes_p3.txt",
           "chars": 33,
@@ -478,6 +608,12 @@
           "textPath": "../scans/output/qwen25vl_7b/R_-_Written_Notes_p3.txt",
           "chars": 572,
           "timeSec": 7.46,
+          "format": "txt"
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/R_-_Written_Notes_p3.txt",
+          "chars": 110,
+          "timeSec": 0.58,
           "format": "txt"
         }
       }
@@ -507,6 +643,12 @@
           "qualityScore": 78.89473684210526,
           "strategy": "full_page"
         },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/R_-_Written_Notes_p4.txt",
+          "chars": 0,
+          "timeSec": 1.29,
+          "format": "txt"
+        },
         "glm_ocr": {
           "textPath": "../scans/output/glm_ocr/R_-_Written_Notes_p4.txt",
           "chars": 33,
@@ -532,6 +674,12 @@
           "chars": 650,
           "timeSec": 7.57,
           "format": "txt"
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/R_-_Written_Notes_p4.txt",
+          "chars": 151,
+          "timeSec": 0.62,
+          "format": "txt"
         }
       }
     },
@@ -549,6 +697,12 @@
           "textPath": "../scans/output/chandra_ocr2/RandB_-_Low_Hanging_Fruit_p1.txt",
           "chars": 1299,
           "timeSec": 21.8,
+          "format": "txt"
+        },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/RandB_-_Low_Hanging_Fruit_p1.txt",
+          "chars": 0,
+          "timeSec": 1.03,
           "format": "txt"
         },
         "glm_ocr": {
@@ -576,6 +730,12 @@
           "chars": 1029,
           "timeSec": 8.02,
           "format": "txt"
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/RandB_-_Low_Hanging_Fruit_p1.txt",
+          "chars": 856,
+          "timeSec": 1.84,
+          "format": "txt"
         }
       }
     },
@@ -593,6 +753,12 @@
           "textPath": "../scans/output/chandra_ocr2/RandB_-_Low_Hanging_Fruit_p5.txt",
           "chars": 9842,
           "timeSec": 138.09,
+          "format": "txt"
+        },
+        "deepseek_ocr2": {
+          "textPath": "../scans/output/deepseek_ocr2/RandB_-_Low_Hanging_Fruit_p5.txt",
+          "chars": 52,
+          "timeSec": 1.26,
           "format": "txt"
         },
         "glm_ocr": {
@@ -620,20 +786,28 @@
           "chars": 7224,
           "timeSec": 29.81,
           "format": "txt"
+        },
+        "trocr_handwritten": {
+          "textPath": "../scans/output/trocr_handwritten/RandB_-_Low_Hanging_Fruit_p5.txt",
+          "chars": 175,
+          "timeSec": 0.53,
+          "format": "txt"
         }
       }
     }
   ],
   "stats": {
     "totalPages": 13,
-    "totalModels": 6,
+    "totalModels": 8,
     "coverageMatrix": {
       "chandra_ocr2": 13,
       "decomposed": 4,
+      "deepseek_ocr2": 13,
       "glm_ocr": 11,
       "marker": 13,
       "minicpm_v": 11,
-      "qwen25vl_7b": 11
+      "qwen25vl_7b": 11,
+      "trocr_handwritten": 13
     }
   }
 }

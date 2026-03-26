@@ -262,30 +262,97 @@ PDF Input
 - Difficulty flag and decomposition metadata
 - Original image preserved for future re-processing
 
+### Phase 6: Additional Model Testing (Round 2)
+
+Tested 3 more models to complete the evaluation suite.
+
+#### Model 6: TrOCR-Large-Handwritten (Microsoft, 660M params)
+
+**13 pages in 18.6s** (1.4s/page avg). 2.44GB VRAM. Blazing fast.
+
+TrOCR is a **line-level** model — it needs pre-segmented text lines. We used simple horizontal strip detection (row-wise intensity thresholding). This crude segmentation limits accuracy significantly.
+
+| Page type | Result | Notes |
+|-----------|--------|-------|
+| Clean typed (Demand Gen) | C+ | Got content but with "1961" artifacts, missing structure |
+| Handwriting (Written Notes p3) | D | "Williams P.MANNOTES", "1961 W.S.T Duke" — mostly garbled |
+| Handwriting (Written Notes p4) | D | "INSE characteristics of products", "MULTI Phang" — fragments |
+| Composited (Written Notes p1) | F | Only 10 chars — segmentation found 1 line |
+| Tables (YNN results) | C | Got some numbers but lost structure |
+
+**Verdict:** TrOCR is hampered by our naive line segmentation. With proper Surya/CRAFT line detection it would likely score B+ on handwriting. As-is, it's the fastest model (1.4s/page) but lowest quality on our test set.
+
+#### Model 7: DeepSeek-OCR-2 (3B, via Ollama)
+
+**Broken.** Same issue as GLM-OCR — the Ollama vision pipeline doesn't properly pass images to these specialized OCR models. Output was either empty (0 chars) or echoed the prompt back. 6.7GB model downloaded for nothing.
+
+#### Model 8: Surya OCR (0.17.1, already installed)
+
+**Broken.** Surya 0.17.1 is incompatible with transformers 5.3.0 (which we upgraded to for Chandra OCR 2). Crashes with `AttributeError: 'SuryaDecoderConfig' object has no attribute 'pad_token_id'`. Would need a separate venv with transformers 4.56 to run.
+
+#### Updated Final Comparison (8 models tested)
+
+| Model | Params | VRAM | Speed/pg | Handwriting | Tables | Status |
+|-------|--------|------|----------|-------------|--------|--------|
+| **Marker** | — | 4GB | 3.2s | F | D | Working |
+| **MiniCPM-V** | 4B | 5.5GB | 7.3s | B | C+ | Working |
+| **Qwen2.5-VL** | 7B | 22.8GB | 18.5s | B+ | **A-** | Working |
+| **Chandra OCR 2** | 4B | 15.3GB | 67.4s | **A-** | A | Working |
+| **TrOCR-Large HW** | 660M | 2.4GB | 1.4s | D (bad segmentation) | C | Working (needs line det.) |
+| GLM-OCR | 0.9B | 2GB | — | — | — | Broken (Ollama) |
+| DeepSeek-OCR-2 | 3B | 6.7GB | — | — | — | Broken (Ollama) |
+| Surya | — | — | — | — | — | Broken (transformers conflict) |
+
+**Working models: 5.** Chandra, Qwen2.5-VL, MiniCPM-V, TrOCR, Marker.
+**Broken: 3.** GLM-OCR, DeepSeek-OCR-2, Surya (all fixable with dedicated venvs or HF direct).
+
+### QA Evaluation Studio
+
+Built `studio/index.html` — a dark-themed single-file web app for comparing model outputs side-by-side against source images. Features: page browser with thumbnails + difficulty badges, image viewer with zoom/pan/rotate, model switcher tabs, markdown rendering, metadata chips, keyboard navigation. Served via `python3 -m http.server 8080`.
+
+### NAS Scan Update
+
+Re-checked Richie-NAS and discovered massive new content:
+
+| Folder | Files | Size |
+|--------|-------|------|
+| Richard Dema | 65 PDFs + 2 subdirs | 852 MB |
+| Brian Dema | 7 PDFs | ~85 MB |
+| Richard + Brian | 5 PDFs | ~83 MB |
+| Femi Test | 7 PDFs (what we have) | 41 MB |
+| Test Image Files | 2 TIFs | 10 MB |
+
+**Total corpus: ~1 GB, 77+ PDFs** — far larger than our initial 7 PDFs.
+
 ### Commits
 
 | Hash | Description |
 |------|-------------|
 | `cef1dcd` | .gitignore for PDFs, caches, outputs |
-| `aa32868` | Test page extraction script (11 pages across difficulty tiers) |
-| `a160bae` | VLM OCR test script (Ollama API, any vision model) |
-| `281edc0` | Decomposition + multi-rotation OCR pipeline prototype |
-| `ebd7d4a` | Parallel rotation-aware OCR pipeline |
-| `139a093` | Initial work log |
+| `aa32868` | Test page extraction script |
+| `a160bae` | VLM OCR test script (Ollama) |
+| `281edc0` | Decomposition + multi-rotation pipeline |
+| `ebd7d4a` | Parallel rotation-aware pipeline |
+| `9d04725` | Expanded worklog |
+| `94d5197` | OCR QA Evaluation Studio |
+| `7170aa6` | Rotate button + markdown renderer |
+| `ed081e5` | Fixed rotation to rotate in place |
+| `c98fc66` | Generated manifest.json |
 
 ### Open Issues
 
-- **GLM-OCR (0.9B)** — SOTA on OmniDocBench (94.62), only 2GB VRAM, but broken on Ollama. Needs HuggingFace transformers 5.0+ which conflicts with Marker/Surya. If we can get it working, its tiny size enables real parallelization (could run 4-6 instances on the 3090).
-- **Chandra OCR 2 speed** — 67.4s/page without flash-linear-attention. Installing `flash-linear-attention` + `causal-conv1d` should cut this significantly.
-- **B - Notes(1).pdf** — 237 pages, 64% of the corpus, completely unexamined beyond page count. Need to sample more pages to understand the range of handwriting quality.
-- **Composited page decomposition** — Pass 2 (region detection) hasn't been triggered yet in testing because rotation alone pushed scores above threshold. Need to find pages where rotation alone isn't enough to properly test it.
+- **Ollama vision pipeline** — GLM-OCR and DeepSeek-OCR-2 both broken. These models need to be run via HuggingFace transformers directly, which requires transformers 5.0+ (conflicts with Surya/Marker).
+- **Surya** — needs transformers 4.56, incompatible with Chandra (needs 5.0+). Solution: separate venv or use Marker's bundled Surya.
+- **TrOCR** — needs proper line detection (Surya or CRAFT) to reach its potential. Current naive segmentation wastes the model.
+- **Chandra speed** — 67.4s/page without flash-linear-attention.
+- **1 GB NAS corpus** — 77+ PDFs discovered, need to plan batch download and processing strategy.
 
 ### Next Steps
 
 - [ ] Full 369-page run with Qwen2.5-VL + rotation detection
-- [ ] Sample and classify pages from B-Notes(1) (the 237-page beast)
-- [ ] Install flash-linear-attention for Chandra speed improvement
-- [ ] Get GLM-OCR working via HuggingFace transformers
-- [ ] Build SQLite tracking DB (pdf_path, page_num, model, confidence, status)
-- [ ] Test decomposition Pass 2 on truly composited pages
-- [ ] Scale pipeline to full NAS scan collection
+- [ ] Download and sample from the 852MB Richard Dema collection
+- [ ] Set up separate venv for Surya/GLM-OCR (transformers 4.56)
+- [ ] Add proper line detection for TrOCR (CRAFT or Surya-based)
+- [ ] Build SQLite tracking DB for batch processing
+- [ ] Embed + cluster pipeline for semantic grouping of noisy OCR output
+- [ ] Scale to full NAS corpus
