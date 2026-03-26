@@ -1,0 +1,639 @@
+{
+  "generated": "2026-03-26T01:13:13.461608+00:00",
+  "models": [
+    {
+      "id": "chandra_ocr2",
+      "name": "Chandra OCR 2",
+      "params": "4B",
+      "vram": "15.3GB",
+      "type": "vlm",
+      "description": "SOTA handwriting (90.8%), March 2026"
+    },
+    {
+      "id": "decomposed",
+      "name": "Decomposed Pipeline",
+      "params": null,
+      "vram": null,
+      "type": "pipeline",
+      "description": "Multi-rotation + region decomposition"
+    },
+    {
+      "id": "glm_ocr",
+      "name": "GLM-OCR",
+      "params": "0.9B",
+      "vram": "2GB",
+      "type": "vlm",
+      "description": "Broken on Ollama \u2014 empty outputs"
+    },
+    {
+      "id": "marker",
+      "name": "Marker (Surya)",
+      "params": null,
+      "vram": "4GB",
+      "type": "traditional",
+      "description": "Traditional OCR baseline, 3.2s/page"
+    },
+    {
+      "id": "minicpm_v",
+      "name": "MiniCPM-V",
+      "params": "4B",
+      "vram": "5.5GB",
+      "type": "vlm",
+      "description": "Fast general-purpose, 7.3s/page"
+    },
+    {
+      "id": "qwen25vl_7b",
+      "name": "Qwen2.5-VL 7B",
+      "params": "7B",
+      "vram": "22.8GB",
+      "type": "vlm",
+      "description": "Best tables (A-), September 2024"
+    }
+  ],
+  "pages": [
+    {
+      "id": "B_-_Notes1_p1",
+      "filename": "B_-_Notes1_p1.png",
+      "imagePath": "../scans/test_pages/B_-_Notes1_p1.png",
+      "sourcePdf": "B - Notes(1).pdf",
+      "pageNum": 1,
+      "difficulty": "Very Hard",
+      "category": "Handwritten notes",
+      "fileSizeBytes": 436690,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/B_-_Notes1_p1.txt",
+          "chars": 438,
+          "timeSec": null,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/B - Notes(1)/B - Notes(1).md",
+          "chars": 97109,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 1
+        }
+      }
+    },
+    {
+      "id": "B_-_Notes1_p2",
+      "filename": "B_-_Notes1_p2.png",
+      "imagePath": "../scans/test_pages/B_-_Notes1_p2.png",
+      "sourcePdf": "B - Notes(1).pdf",
+      "pageNum": 2,
+      "difficulty": "Very Hard",
+      "category": "Handwritten notes",
+      "fileSizeBytes": 563228,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/B_-_Notes1_p2.txt",
+          "chars": 338,
+          "timeSec": null,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/B - Notes(1)/B - Notes(1).md",
+          "chars": 97109,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 2
+        }
+      }
+    },
+    {
+      "id": "B_-_The_Keys_to_Demand_Generation_p1",
+      "filename": "B_-_The_Keys_to_Demand_Generation_p1.png",
+      "imagePath": "../scans/test_pages/B_-_The_Keys_to_Demand_Generation_p1.png",
+      "sourcePdf": "B - The Keys to Demand Generation.pdf",
+      "pageNum": 1,
+      "difficulty": "Easy",
+      "category": "Clean typed",
+      "fileSizeBytes": 1473314,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/B_-_The_Keys_to_Demand_Generation_p1.txt",
+          "chars": 4443,
+          "timeSec": 32.69,
+          "format": "txt"
+        },
+        "glm_ocr": {
+          "textPath": "../scans/output/glm_ocr/B_-_The_Keys_to_Demand_Generation_p1.txt",
+          "chars": 33,
+          "timeSec": 10.56,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/B - The Keys to Demand Generation/B - The Keys to Demand Generation.md",
+          "chars": 21058,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 1
+        },
+        "minicpm_v": {
+          "textPath": "../scans/output/minicpm_v/B_-_The_Keys_to_Demand_Generation_p1.txt",
+          "chars": 4390,
+          "timeSec": 15.09,
+          "format": "txt"
+        },
+        "qwen25vl_7b": {
+          "textPath": "../scans/output/qwen25vl_7b/B_-_The_Keys_to_Demand_Generation_p1.txt",
+          "chars": 4167,
+          "timeSec": 19.71,
+          "format": "txt"
+        }
+      }
+    },
+    {
+      "id": "R_-_Org_Charts_p1",
+      "filename": "R_-_Org_Charts_p1.png",
+      "imagePath": "../scans/test_pages/R_-_Org_Charts_p1.png",
+      "sourcePdf": "R - Org Charts.pdf",
+      "pageNum": 1,
+      "difficulty": "Medium",
+      "category": "Printed org chart",
+      "fileSizeBytes": 842798,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/R_-_Org_Charts_p1.txt",
+          "chars": 5235,
+          "timeSec": 56.85,
+          "format": "txt"
+        },
+        "glm_ocr": {
+          "textPath": "../scans/output/glm_ocr/R_-_Org_Charts_p1.txt",
+          "chars": 33,
+          "timeSec": 0.09,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/R - Org Charts/R - Org Charts.md",
+          "chars": 565099,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 1
+        },
+        "minicpm_v": {
+          "textPath": "../scans/output/minicpm_v/R_-_Org_Charts_p1.txt",
+          "chars": 19966,
+          "timeSec": 28.69,
+          "format": "txt"
+        },
+        "qwen25vl_7b": {
+          "textPath": "../scans/output/qwen25vl_7b/R_-_Org_Charts_p1.txt",
+          "chars": 7329,
+          "timeSec": 46.0,
+          "format": "txt"
+        }
+      }
+    },
+    {
+      "id": "R_-_Org_Charts_p2",
+      "filename": "R_-_Org_Charts_p2.png",
+      "imagePath": "../scans/test_pages/R_-_Org_Charts_p2.png",
+      "sourcePdf": "R - Org Charts.pdf",
+      "pageNum": 2,
+      "difficulty": "Hard",
+      "category": "Handwritten org chart",
+      "fileSizeBytes": 2691098,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/R_-_Org_Charts_p2.txt",
+          "chars": 3546,
+          "timeSec": 54.38,
+          "format": "txt"
+        },
+        "decomposed": {
+          "textPath": "../scans/output/decomposed/R_-_Org_Charts_p2.txt",
+          "chars": 410,
+          "timeSec": 7.0,
+          "format": "txt",
+          "rotation": 90,
+          "qualityScore": 72.62318840579711,
+          "strategy": "full_page"
+        },
+        "glm_ocr": {
+          "textPath": "../scans/output/glm_ocr/R_-_Org_Charts_p2.txt",
+          "chars": 33,
+          "timeSec": 0.11,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/R - Org Charts/R - Org Charts.md",
+          "chars": 565099,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 2
+        },
+        "minicpm_v": {
+          "textPath": "../scans/output/minicpm_v/R_-_Org_Charts_p2.txt",
+          "chars": 2009,
+          "timeSec": 3.84,
+          "format": "txt"
+        },
+        "qwen25vl_7b": {
+          "textPath": "../scans/output/qwen25vl_7b/R_-_Org_Charts_p2.txt",
+          "chars": 841,
+          "timeSec": 7.87,
+          "format": "txt"
+        }
+      }
+    },
+    {
+      "id": "R_-_Presenataions_p9",
+      "filename": "R_-_Presenataions_p9.png",
+      "imagePath": "../scans/test_pages/R_-_Presenataions_p9.png",
+      "sourcePdf": "R - Presenataions.pdf",
+      "pageNum": 9,
+      "difficulty": "Hard",
+      "category": "Marketing collateral",
+      "fileSizeBytes": 1063606,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/R_-_Presenataions_p9.txt",
+          "chars": 2381,
+          "timeSec": 30.16,
+          "format": "txt"
+        },
+        "glm_ocr": {
+          "textPath": "../scans/output/glm_ocr/R_-_Presenataions_p9.txt",
+          "chars": 33,
+          "timeSec": 0.09,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/R - Presenataions/R - Presenataions.md",
+          "chars": 31469,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 9
+        },
+        "minicpm_v": {
+          "textPath": "../scans/output/minicpm_v/R_-_Presenataions_p9.txt",
+          "chars": 2139,
+          "timeSec": 3.9,
+          "format": "txt"
+        },
+        "qwen25vl_7b": {
+          "textPath": "../scans/output/qwen25vl_7b/R_-_Presenataions_p9.txt",
+          "chars": 1979,
+          "timeSec": 9.8,
+          "format": "txt"
+        }
+      }
+    },
+    {
+      "id": "R_-_Theory_of_the_Business_-_Underlying_Philosophy_p1",
+      "filename": "R_-_Theory_of_the_Business_-_Underlying_Philosophy_p1.png",
+      "imagePath": "../scans/test_pages/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p1.png",
+      "sourcePdf": "R - Theory of the Business - Underlying Philosophy.pdf",
+      "pageNum": 1,
+      "difficulty": "Medium",
+      "category": "Annotated book",
+      "fileSizeBytes": 5667050,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p1.txt",
+          "chars": 3565,
+          "timeSec": 29.64,
+          "format": "txt"
+        },
+        "glm_ocr": {
+          "textPath": "../scans/output/glm_ocr/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p1.txt",
+          "chars": 33,
+          "timeSec": 0.16,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/R - Theory of the Business - Underlying Philosophy/R - Theory of the Business - Underlying Philosophy.md",
+          "chars": 51602,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 1
+        },
+        "minicpm_v": {
+          "textPath": "../scans/output/minicpm_v/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p1.txt",
+          "chars": 3520,
+          "timeSec": 5.91,
+          "format": "txt"
+        },
+        "qwen25vl_7b": {
+          "textPath": "../scans/output/qwen25vl_7b/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p1.txt",
+          "chars": 3247,
+          "timeSec": 12.05,
+          "format": "txt"
+        }
+      }
+    },
+    {
+      "id": "R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3",
+      "filename": "R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3.png",
+      "imagePath": "../scans/test_pages/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3.png",
+      "sourcePdf": "R - Theory of the Business - Underlying Philosophy.pdf",
+      "pageNum": 3,
+      "difficulty": "Medium",
+      "category": "Annotated book",
+      "fileSizeBytes": 6869184,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3.txt",
+          "chars": 2072,
+          "timeSec": 23.71,
+          "format": "txt"
+        },
+        "glm_ocr": {
+          "textPath": "../scans/output/glm_ocr/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3.txt",
+          "chars": 33,
+          "timeSec": 0.18,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/R - Theory of the Business - Underlying Philosophy/R - Theory of the Business - Underlying Philosophy.md",
+          "chars": 51602,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 3
+        },
+        "minicpm_v": {
+          "textPath": "../scans/output/minicpm_v/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3.txt",
+          "chars": 2006,
+          "timeSec": 3.76,
+          "format": "txt"
+        },
+        "qwen25vl_7b": {
+          "textPath": "../scans/output/qwen25vl_7b/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3.txt",
+          "chars": 1865,
+          "timeSec": 9.25,
+          "format": "txt"
+        }
+      }
+    },
+    {
+      "id": "R_-_Written_Notes_p1",
+      "filename": "R_-_Written_Notes_p1.png",
+      "imagePath": "../scans/test_pages/R_-_Written_Notes_p1.png",
+      "sourcePdf": "R - Written Notes.pdf",
+      "pageNum": 1,
+      "difficulty": "Very Hard",
+      "category": "Composited cursive",
+      "fileSizeBytes": 7647598,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/R_-_Written_Notes_p1.txt",
+          "chars": 15254,
+          "timeSec": 308.53,
+          "format": "txt"
+        },
+        "decomposed": {
+          "textPath": "../scans/output/decomposed/R_-_Written_Notes_p1.txt",
+          "chars": 624,
+          "timeSec": 7.41,
+          "format": "txt",
+          "rotation": 180,
+          "qualityScore": 73.7128712871287,
+          "strategy": "full_page"
+        },
+        "glm_ocr": {
+          "textPath": "../scans/output/glm_ocr/R_-_Written_Notes_p1.txt",
+          "chars": 33,
+          "timeSec": 0.18,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/R - Written Notes/R - Written Notes.md",
+          "chars": 3827,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 1
+        },
+        "minicpm_v": {
+          "textPath": "../scans/output/minicpm_v/R_-_Written_Notes_p1.txt",
+          "chars": 1024,
+          "timeSec": 3.14,
+          "format": "txt"
+        },
+        "qwen25vl_7b": {
+          "textPath": "../scans/output/qwen25vl_7b/R_-_Written_Notes_p1.txt",
+          "chars": 14742,
+          "timeSec": 45.86,
+          "format": "txt"
+        }
+      }
+    },
+    {
+      "id": "R_-_Written_Notes_p3",
+      "filename": "R_-_Written_Notes_p3.png",
+      "imagePath": "../scans/test_pages/R_-_Written_Notes_p3.png",
+      "sourcePdf": "R - Written Notes.pdf",
+      "pageNum": 3,
+      "difficulty": "Hard",
+      "category": "Dense cursive",
+      "fileSizeBytes": 6641020,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/R_-_Written_Notes_p3.txt",
+          "chars": 646,
+          "timeSec": 20.36,
+          "format": "txt"
+        },
+        "decomposed": {
+          "textPath": "../scans/output/decomposed/R_-_Written_Notes_p3.txt",
+          "chars": 502,
+          "timeSec": 7.47,
+          "format": "txt",
+          "rotation": 0,
+          "qualityScore": 74.23076923076923,
+          "strategy": "full_page"
+        },
+        "glm_ocr": {
+          "textPath": "../scans/output/glm_ocr/R_-_Written_Notes_p3.txt",
+          "chars": 33,
+          "timeSec": 0.16,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/R - Written Notes/R - Written Notes.md",
+          "chars": 3827,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 3
+        },
+        "minicpm_v": {
+          "textPath": "../scans/output/minicpm_v/R_-_Written_Notes_p3.txt",
+          "chars": 464,
+          "timeSec": 1.91,
+          "format": "txt"
+        },
+        "qwen25vl_7b": {
+          "textPath": "../scans/output/qwen25vl_7b/R_-_Written_Notes_p3.txt",
+          "chars": 572,
+          "timeSec": 7.46,
+          "format": "txt"
+        }
+      }
+    },
+    {
+      "id": "R_-_Written_Notes_p4",
+      "filename": "R_-_Written_Notes_p4.png",
+      "imagePath": "../scans/test_pages/R_-_Written_Notes_p4.png",
+      "sourcePdf": "R - Written Notes.pdf",
+      "pageNum": 4,
+      "difficulty": "Hard",
+      "category": "Dense cursive",
+      "fileSizeBytes": 7949269,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/R_-_Written_Notes_p4.txt",
+          "chars": 934,
+          "timeSec": 24.76,
+          "format": "txt"
+        },
+        "decomposed": {
+          "textPath": "../scans/output/decomposed/R_-_Written_Notes_p4.txt",
+          "chars": 643,
+          "timeSec": 7.89,
+          "format": "txt",
+          "rotation": 0,
+          "qualityScore": 78.89473684210526,
+          "strategy": "full_page"
+        },
+        "glm_ocr": {
+          "textPath": "../scans/output/glm_ocr/R_-_Written_Notes_p4.txt",
+          "chars": 33,
+          "timeSec": 0.19,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/R - Written Notes/R - Written Notes.md",
+          "chars": 3827,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 4
+        },
+        "minicpm_v": {
+          "textPath": "../scans/output/minicpm_v/R_-_Written_Notes_p4.txt",
+          "chars": 762,
+          "timeSec": 2.57,
+          "format": "txt"
+        },
+        "qwen25vl_7b": {
+          "textPath": "../scans/output/qwen25vl_7b/R_-_Written_Notes_p4.txt",
+          "chars": 650,
+          "timeSec": 7.57,
+          "format": "txt"
+        }
+      }
+    },
+    {
+      "id": "RandB_-_Low_Hanging_Fruit_p1",
+      "filename": "RandB_-_Low_Hanging_Fruit_p1.png",
+      "imagePath": "../scans/test_pages/RandB_-_Low_Hanging_Fruit_p1.png",
+      "sourcePdf": "R&B - Low Hanging Fruit.pdf",
+      "pageNum": 1,
+      "difficulty": "Medium",
+      "category": "Mixed typed",
+      "fileSizeBytes": 585032,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/RandB_-_Low_Hanging_Fruit_p1.txt",
+          "chars": 1299,
+          "timeSec": 21.8,
+          "format": "txt"
+        },
+        "glm_ocr": {
+          "textPath": "../scans/output/glm_ocr/RandB_-_Low_Hanging_Fruit_p1.txt",
+          "chars": 33,
+          "timeSec": 0.08,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/R&B - Low Hanging Fruit/R&B - Low Hanging Fruit.md",
+          "chars": 338249,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 1
+        },
+        "minicpm_v": {
+          "textPath": "../scans/output/minicpm_v/RandB_-_Low_Hanging_Fruit_p1.txt",
+          "chars": 1407,
+          "timeSec": 2.93,
+          "format": "txt"
+        },
+        "qwen25vl_7b": {
+          "textPath": "../scans/output/qwen25vl_7b/RandB_-_Low_Hanging_Fruit_p1.txt",
+          "chars": 1029,
+          "timeSec": 8.02,
+          "format": "txt"
+        }
+      }
+    },
+    {
+      "id": "RandB_-_Low_Hanging_Fruit_p5",
+      "filename": "RandB_-_Low_Hanging_Fruit_p5.png",
+      "imagePath": "../scans/test_pages/RandB_-_Low_Hanging_Fruit_p5.png",
+      "sourcePdf": "R&B - Low Hanging Fruit.pdf",
+      "pageNum": 5,
+      "difficulty": "Hard",
+      "category": "Table + handwritten",
+      "fileSizeBytes": 1267032,
+      "outputs": {
+        "chandra_ocr2": {
+          "textPath": "../scans/output/chandra_ocr2/RandB_-_Low_Hanging_Fruit_p5.txt",
+          "chars": 9842,
+          "timeSec": 138.09,
+          "format": "txt"
+        },
+        "glm_ocr": {
+          "textPath": "../scans/output/glm_ocr/RandB_-_Low_Hanging_Fruit_p5.txt",
+          "chars": 33,
+          "timeSec": 0.1,
+          "format": "txt"
+        },
+        "marker": {
+          "textPath": "../scans/output/marker/R&B - Low Hanging Fruit/R&B - Low Hanging Fruit.md",
+          "chars": 338249,
+          "timeSec": null,
+          "format": "md",
+          "wholeDocument": true,
+          "pageNum": 5
+        },
+        "minicpm_v": {
+          "textPath": "../scans/output/minicpm_v/RandB_-_Low_Hanging_Fruit_p5.txt",
+          "chars": 3865,
+          "timeSec": 8.05,
+          "format": "txt"
+        },
+        "qwen25vl_7b": {
+          "textPath": "../scans/output/qwen25vl_7b/RandB_-_Low_Hanging_Fruit_p5.txt",
+          "chars": 7224,
+          "timeSec": 29.81,
+          "format": "txt"
+        }
+      }
+    }
+  ],
+  "stats": {
+    "totalPages": 13,
+    "totalModels": 6,
+    "coverageMatrix": {
+      "chandra_ocr2": 13,
+      "decomposed": 4,
+      "glm_ocr": 11,
+      "marker": 13,
+      "minicpm_v": 11,
+      "qwen25vl_7b": 11
+    }
+  }
+}
