@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-26T03:32:46.118304+00:00",
+  "generated": "2026-03-26T03:42:01.045809+00:00",
   "models": [
     {
       "id": "chandra_ocr2",
@@ -59,11 +59,19 @@
     },
     {
       "id": "trocr_handwritten",
-      "name": "TrOCR-Large HW",
+      "name": "TrOCR-Large HW v1",
       "params": "660M",
       "vram": "2.4GB",
       "type": "specialized",
-      "description": "Line-level handwriting specialist, 2.89% CER on IAM"
+      "description": "Naive line segmentation (v1)"
+    },
+    {
+      "id": "trocr_v2",
+      "name": "TrOCR-Large HW v2",
+      "params": "660M",
+      "vram": "2.4GB",
+      "type": "specialized",
+      "description": "Projection + component line detection, deskew"
     }
   ],
   "pages": [
@@ -102,6 +110,12 @@
           "chars": 262,
           "timeSec": 1.52,
           "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/B_-_Notes1_p1.txt",
+          "chars": 169,
+          "timeSec": 0.92,
+          "format": "txt"
         }
       }
     },
@@ -139,6 +153,12 @@
           "textPath": "../scans/output/trocr_handwritten/B_-_Notes1_p2.txt",
           "chars": 68,
           "timeSec": 0.26,
+          "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/B_-_Notes1_p2.txt",
+          "chars": 20,
+          "timeSec": 0.11,
           "format": "txt"
         }
       }
@@ -196,6 +216,12 @@
           "chars": 1972,
           "timeSec": 3.06,
           "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/B_-_The_Keys_to_Demand_Generation_p1.txt",
+          "chars": 4057,
+          "timeSec": 6.58,
+          "format": "txt"
         }
       }
     },
@@ -251,6 +277,12 @@
           "textPath": "../scans/output/trocr_handwritten/R_-_Org_Charts_p1.txt",
           "chars": 76,
           "timeSec": 0.25,
+          "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/R_-_Org_Charts_p1.txt",
+          "chars": 477,
+          "timeSec": 1.66,
           "format": "txt"
         }
       }
@@ -317,6 +349,12 @@
           "chars": 57,
           "timeSec": 0.28,
           "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/R_-_Org_Charts_p2.txt",
+          "chars": 244,
+          "timeSec": 0.85,
+          "format": "txt"
         }
       }
     },
@@ -372,6 +410,12 @@
           "textPath": "../scans/output/trocr_handwritten/R_-_Presenataions_p9.txt",
           "chars": 1502,
           "timeSec": 2.67,
+          "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/R_-_Presenataions_p9.txt",
+          "chars": 1719,
+          "timeSec": 3.43,
           "format": "txt"
         }
       }
@@ -429,6 +473,12 @@
           "chars": 2206,
           "timeSec": 3.6,
           "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p1.txt",
+          "chars": 1458,
+          "timeSec": 2.62,
+          "format": "txt"
         }
       }
     },
@@ -484,6 +534,12 @@
           "textPath": "../scans/output/trocr_handwritten/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3.txt",
           "chars": 1255,
           "timeSec": 3.27,
+          "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/R_-_Theory_of_the_Business_-_Underlying_Philosophy_p3.txt",
+          "chars": 934,
+          "timeSec": 1.87,
           "format": "txt"
         }
       }
@@ -550,6 +606,12 @@
           "chars": 10,
           "timeSec": 0.09,
           "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/R_-_Written_Notes_p1.txt",
+          "chars": 61,
+          "timeSec": 0.49,
+          "format": "txt"
         }
       }
     },
@@ -614,6 +676,12 @@
           "textPath": "../scans/output/trocr_handwritten/R_-_Written_Notes_p3.txt",
           "chars": 110,
           "timeSec": 0.58,
+          "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/R_-_Written_Notes_p3.txt",
+          "chars": 77,
+          "timeSec": 0.44,
           "format": "txt"
         }
       }
@@ -680,6 +748,12 @@
           "chars": 151,
           "timeSec": 0.62,
           "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/R_-_Written_Notes_p4.txt",
+          "chars": 142,
+          "timeSec": 0.7,
+          "format": "txt"
         }
       }
     },
@@ -735,6 +809,12 @@
           "textPath": "../scans/output/trocr_handwritten/RandB_-_Low_Hanging_Fruit_p1.txt",
           "chars": 856,
           "timeSec": 1.84,
+          "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/RandB_-_Low_Hanging_Fruit_p1.txt",
+          "chars": 1105,
+          "timeSec": 2.62,
           "format": "txt"
         }
       }
@@ -792,13 +872,19 @@
           "chars": 175,
           "timeSec": 0.53,
           "format": "txt"
+        },
+        "trocr_v2": {
+          "textPath": "../scans/output/trocr_v2/RandB_-_Low_Hanging_Fruit_p5.txt",
+          "chars": 69,
+          "timeSec": 0.37,
+          "format": "txt"
         }
       }
     }
   ],
   "stats": {
     "totalPages": 13,
-    "totalModels": 8,
+    "totalModels": 9,
     "coverageMatrix": {
       "chandra_ocr2": 13,
       "decomposed": 4,
@@ -807,7 +893,8 @@
       "marker": 13,
       "minicpm_v": 11,
       "qwen25vl_7b": 11,
-      "trocr_handwritten": 13
+      "trocr_handwritten": 13,
+      "trocr_v2": 13
     }
   }
 }

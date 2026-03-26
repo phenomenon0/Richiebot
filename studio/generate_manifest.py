@@ -87,11 +87,18 @@ MODEL_META = {
         "description": "Broken on Ollama — empty outputs",
     },
     "trocr_handwritten": {
-        "name": "TrOCR-Large HW",
+        "name": "TrOCR-Large HW v1",
         "params": "660M",
         "vram": "2.4GB",
         "type": "specialized",
-        "description": "Line-level handwriting specialist, 2.89% CER on IAM",
+        "description": "Naive line segmentation (v1)",
+    },
+    "trocr_v2": {
+        "name": "TrOCR-Large HW v2",
+        "params": "660M",
+        "vram": "2.4GB",
+        "type": "specialized",
+        "description": "Projection + component line detection, deskew",
     },
     "deepseek_ocr2": {
         "name": "DeepSeek-OCR-2",
