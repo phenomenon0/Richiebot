@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OCR QA Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-root: #0f0f0f;
+  --bg-surface: #161616;
+  --bg-elevated: #1e1e1e;
+  --bg-hover: #252525;
+  --bg-active: #2a2a2a;
+  --border-subtle: #232323;
+  --border-default: #2e2e2e;
+  --border-strong: #3a3a3a;
+  --text-primary: #e8e4df;
+  --text-secondary: #8a8480;
+  --text-tertiary: #5a5550;
+  --text-inverse: #0f0f0f;
+  --accent: #FBBF24;
+  --accent-hover: #F59E0B;
+  --accent-muted: rgba(251, 191, 36, 0.08);
+  --accent-muted-strong: rgba(251, 191, 36, 0.15);
+  --diff-easy: #34D399;
+  --diff-medium: #FBBF24;
+  --diff-hard: #FB923C;
+  --diff-vhard: #F87171;
+  --error: #EF4444;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', monospace;
+  --text-xs: 0.6875rem;
+  --text-sm: 0.75rem;
+  --text-base: 0.8125rem;
+  --text-md: 0.875rem;
+  --text-lg: 1rem;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --transition-fast: 100ms ease;
+  --transition-base: 180ms ease;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  background: var(--bg-root);
+  line-height: 1.5;
+  overflow: hidden;
+  height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--accent-muted-strong); color: var(--accent); }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+
+/* --- Topbar --- */
+.topbar {
+  height: 48px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+.topbar-title span { color: var(--accent); }
+.topbar-meta {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Workspace --- */
+.workspace {
+  display: grid;
+  grid-template-columns: 260px 1fr 1fr;
+  height: calc(100vh - 48px);
+}
+
+/* --- Sidebar --- */
+.sidebar {
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.sidebar-header {
+  padding: 12px 12px 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+.search-input {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+.search-input::placeholder { color: var(--text-tertiary); }
+.search-input:focus { border-color: var(--accent); }
+.filter-pills {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.filter-pill {
+  font-size: var(--text-xs);
+  padding: 2px 8px;
+  border-radius: 99px;
+  border: 1px solid var(--border-default);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: var(--font-sans);
+}
+.filter-pill:hover { background: var(--bg-hover); color: var(--text-primary); }
+.filter-pill.active { border-color: var(--accent); color: var(--accent); background: var(--accent-muted); }
+.page-list {
+  list-style: none;
+  overflow-y: auto;
+  flex: 1;
+  padding: 4px 0;
+}
+.page-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all var(--transition-fast);
+  min-height: 56px;
+}
+.page-item:hover { background: var(--bg-hover); }
+.page-item.active {
+  background: var(--accent-muted);
+  border-left-color: var(--accent);
+}
+.page-thumb {
+  width: 40px;
+  height: 52px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+  background: var(--bg-elevated);
+}
+.page-info { flex: 1; min-width: 0; }
+.page-name {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.page-sub {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+.diff-badge {
+  font-size: 0.625rem;
+  padding: 1px 6px;
+  border-radius: 99px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.diff-badge[data-diff="Easy"] { color: var(--diff-easy); background: rgba(52,211,153,0.1); }
+.diff-badge[data-diff="Medium"] { color: var(--diff-medium); background: rgba(251,191,36,0.1); }
+.diff-badge[data-diff="Hard"] { color: var(--diff-hard); background: rgba(251,146,60,0.1); }
+.diff-badge[data-diff="Very Hard"] { color: var(--diff-vhard); background: rgba(248,113,113,0.1); }
+.diff-badge[data-diff="Unknown"] { color: var(--text-tertiary); background: var(--bg-active); }
+
+/* --- Panels --- */
+.panel-header {
+  height: 40px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.panel-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+/* --- Image Viewer --- */
+.viewer-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--border-subtle);
+}
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+.btn-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  transition: all var(--transition-fast);
+}
+.btn-icon:hover { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-strong); }
+.zoom-display {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+  min-width: 36px;
+  text-align: center;
+}
+.image-viewport {
+  flex: 1;
+  overflow: hidden;
+  cursor: grab;
+  position: relative;
+  background: var(--bg-root);
+  /* subtle grid background */
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+.image-viewport.dragging { cursor: grabbing; }
+.image-viewport img {
+  transform-origin: 0 0;
+  user-select: none;
+  -webkit-user-drag: none;
+  will-change: transform;
+  image-rendering: auto;
+}
+
+/* --- Output Panel --- */
+.output-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.model-tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  flex: 1;
+  padding: 2px 0;
+}
+.model-tab {
+  font-size: var(--text-xs);
+  font-family: var(--font-sans);
+  padding: 4px 10px;
+  border-radius: 99px;
+  border: 1px solid var(--border-default);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+.model-tab:hover { background: var(--bg-hover); color: var(--text-primary); }
+.model-tab.active {
+  background: var(--accent);
+  color: var(--text-inverse);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+.model-tab.empty {
+  opacity: 0.35;
+  font-style: italic;
+}
+.model-tab.empty:hover { opacity: 0.5; }
+.output-meta {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap;
+  min-height: 36px;
+  align-items: center;
+}
+.meta-chip {
+  font-size: var(--text-xs);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-active);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+.meta-chip.amber {
+  background: var(--accent-muted);
+  color: var(--accent);
+  border: 1px solid rgba(251,191,36,0.2);
+}
+.meta-chip.error {
+  background: rgba(239,68,68,0.1);
+  color: var(--error);
+}
+.output-body {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+}
+.output-text {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  tab-size: 4;
+}
+.output-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+  font-style: italic;
+}
+.output-warning {
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  border-radius: var(--radius-md);
+  background: var(--accent-muted);
+  border: 1px solid rgba(251,191,36,0.15);
+  color: var(--accent);
+  font-size: var(--text-xs);
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <h1 class="topbar-title"><span>OCR</span> QA Studio</h1>
+    <span class="topbar-meta" id="topbar-meta"></span>
+  </div>
+  <div class="topbar-right">
+    <span style="font-size:var(--text-xs);color:var(--text-tertiary)">
+      <kbd style="background:var(--bg-active);padding:1px 4px;border-radius:3px;font-family:var(--font-mono)">↑↓</kbd> pages
+      <kbd style="background:var(--bg-active);padding:1px 4px;border-radius:3px;font-family:var(--font-mono);margin-left:8px">←→</kbd> models
+    </span>
+  </div>
+</header>
+
+<main class="workspace">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <input type="text" class="search-input" id="page-search" placeholder="Filter pages...">
+      <div class="filter-pills" id="difficulty-filters"></div>
+    </div>
+    <ul class="page-list" id="page-list"></ul>
+  </aside>
+
+  <section class="viewer-panel">
+    <div class="panel-header">
+      <span class="panel-label">Source</span>
+      <div class="zoom-controls">
+        <button class="btn-icon" id="btn-zoom-out" title="Zoom out">−</button>
+        <span class="zoom-display" id="zoom-display">Fit</span>
+        <button class="btn-icon" id="btn-zoom-in" title="Zoom in">+</button>
+        <button class="btn-icon" id="btn-zoom-fit" title="Fit to view" style="font-size:var(--text-xs);width:auto;padding:0 8px">Fit</button>
+      </div>
+    </div>
+    <div class="image-viewport" id="image-viewport">
+      <img id="source-image" src="" alt="" draggable="false">
+    </div>
+  </section>
+
+  <section class="output-panel">
+    <div class="panel-header">
+      <span class="panel-label">Output</span>
+      <div class="model-tabs" id="model-tabs"></div>
+    </div>
+    <div class="output-meta" id="output-meta"></div>
+    <div class="output-body" id="output-body">
+      <div class="output-empty">Select a page to begin</div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function() {
+  'use strict';
+
+  const state = {
+    manifest: null,
+    pages: [],
+    filtered: [],
+    models: [],
+    pageId: null,
+    modelId: null,
+    diffFilter: null,
+    search: '',
+    zoom: { scale: 1, tx: 0, ty: 0, dragging: false, lx: 0, ly: 0 },
+    cache: {},
+  };
+
+  const $ = s => document.querySelector(s);
+  const $$ = s => document.querySelectorAll(s);
+
+  // --- Init ---
+  async function init() {
+    const resp = await fetch('./manifest.json');
+    state.manifest = await resp.json();
+    state.pages = state.manifest.pages;
+    state.filtered = [...state.pages];
+    state.models = state.manifest.models;
+
+    $('#topbar-meta').textContent = `${state.pages.length} pages · ${state.models.length} models`;
+
+    renderFilters();
+    renderSidebar();
+    renderModelTabs();
+    setupImageViewer();
+
+    if (state.pages.length > 0) selectPage(state.pages[0].id);
+  }
+
+  // --- Sidebar ---
+  function renderSidebar() {
+    const list = $('#page-list');
+    list.innerHTML = '';
+    for (const page of state.filtered) {
+      const li = document.createElement('li');
+      li.className = 'page-item' + (page.id === state.pageId ? ' active' : '');
+      li.dataset.id = page.id;
+      const modelCount = Object.keys(page.outputs).length;
+      li.innerHTML = `
+        <img class="page-thumb" src="${page.imagePath}" alt="" loading="lazy">
+        <div class="page-info">
+          <div class="page-name">${page.id.replace(/_/g, ' ')}</div>
+          <div class="page-sub">
+            <span class="diff-badge" data-diff="${page.difficulty}">${page.difficulty}</span>
+            <span>${modelCount} model${modelCount !== 1 ? 's' : ''}</span>
+          </div>
+        </div>
+      `;
+      li.addEventListener('click', () => selectPage(page.id));
+      list.appendChild(li);
+    }
+  }
+
+  function renderFilters() {
+    const container = $('#difficulty-filters');
+    const levels = ['Easy', 'Medium', 'Hard', 'Very Hard'];
+    container.innerHTML = levels.map(l =>
+      `<button class="filter-pill" data-diff="${l}">${l}</button>`
+    ).join('');
+    container.querySelectorAll('.filter-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const d = btn.dataset.diff;
+        state.diffFilter = state.diffFilter === d ? null : d;
+        container.querySelectorAll('.filter-pill').forEach(b =>
+          b.classList.toggle('active', b.dataset.diff === state.diffFilter)
+        );
+        applyFilters();
+      });
+    });
+
+    $('#page-search').addEventListener('input', e => {
+      state.search = e.target.value.toLowerCase();
+      applyFilters();
+    });
+  }
+
+  function applyFilters() {
+    state.filtered = state.pages.filter(p => {
+      if (state.diffFilter && p.difficulty !== state.diffFilter) return false;
+      if (state.search && !p.id.toLowerCase().includes(state.search) &&
+          !(p.sourcePdf || '').toLowerCase().includes(state.search) &&
+          !(p.category || '').toLowerCase().includes(state.search)) return false;
+      return true;
+    });
+    renderSidebar();
+  }
+
+  function selectPage(pageId) {
+    state.pageId = pageId;
+    const page = state.pages.find(p => p.id === pageId);
+    if (!page) return;
+
+    // Update sidebar active
+    $$('.page-item').forEach(el =>
+      el.classList.toggle('active', el.dataset.id === pageId)
+    );
+    // Scroll active into view
+    const active = document.querySelector('.page-item.active');
+    if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+
+    // Load image
+    loadImage(page);
+
+    // Update model tab states
+    updateModelTabs(page);
+
+    // Select model: keep current if available, else first available
+    const available = Object.keys(page.outputs);
+    if (!available.includes(state.modelId) && available.length > 0) {
+      state.modelId = available[0];
+    }
+    highlightModelTab();
+    loadOutput(page, state.modelId);
+  }
+
+  // --- Image Viewer ---
+  function loadImage(page) {
+    const img = $('#source-image');
+    img.src = page.imagePath;
+    img.onload = () => fitImage();
+  }
+
+  function setupImageViewer() {
+    const vp = $('#image-viewport');
+    const img = $('#source-image');
+
+    // Wheel zoom
+    vp.addEventListener('wheel', e => {
+      e.preventDefault();
+      const rect = vp.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      const newScale = Math.max(0.05, Math.min(15, state.zoom.scale * (1 + delta)));
+      const ratio = newScale / state.zoom.scale;
+      state.zoom.tx = mx - ratio * (mx - state.zoom.tx);
+      state.zoom.ty = my - ratio * (my - state.zoom.ty);
+      state.zoom.scale = newScale;
+      updateTransform();
+    }, { passive: false });
+
+    // Pan
+    vp.addEventListener('mousedown', e => {
+      if (e.button !== 0) return;
+      state.zoom.dragging = true;
+      state.zoom.lx = e.clientX;
+      state.zoom.ly = e.clientY;
+      vp.classList.add('dragging');
+    });
+    window.addEventListener('mousemove', e => {
+      if (!state.zoom.dragging) return;
+      state.zoom.tx += e.clientX - state.zoom.lx;
+      state.zoom.ty += e.clientY - state.zoom.ly;
+      state.zoom.lx = e.clientX;
+      state.zoom.ly = e.clientY;
+      updateTransform();
+    });
+    window.addEventListener('mouseup', () => {
+      state.zoom.dragging = false;
+      $('#image-viewport').classList.remove('dragging');
+    });
+
+    // Buttons
+    $('#btn-zoom-in').addEventListener('click', () => {
+      state.zoom.scale = Math.min(15, state.zoom.scale * 1.25);
+      updateTransform();
+    });
+    $('#btn-zoom-out').addEventListener('click', () => {
+      state.zoom.scale = Math.max(0.05, state.zoom.scale * 0.8);
+      updateTransform();
+    });
+    $('#btn-zoom-fit').addEventListener('click', fitImage);
+  }
+
+  function fitImage() {
+    const vp = $('#image-viewport');
+    const img = $('#source-image');
+    if (!img.naturalWidth) return;
+    const pad = 24;
+    const scaleX = (vp.clientWidth - pad) / img.naturalWidth;
+    const scaleY = (vp.clientHeight - pad) / img.naturalHeight;
+    state.zoom.scale = Math.min(scaleX, scaleY, 1);
+    state.zoom.tx = (vp.clientWidth - img.naturalWidth * state.zoom.scale) / 2;
+    state.zoom.ty = (vp.clientHeight - img.naturalHeight * state.zoom.scale) / 2;
+    updateTransform();
+  }
+
+  function updateTransform() {
+    const img = $('#source-image');
+    img.style.transform = `translate(${state.zoom.tx}px, ${state.zoom.ty}px) scale(${state.zoom.scale})`;
+    const pct = Math.round(state.zoom.scale * 100);
+    $('#zoom-display').textContent = pct + '%';
+  }
+
+  // --- Model Tabs ---
+  function renderModelTabs() {
+    const container = $('#model-tabs');
+    container.innerHTML = state.models.map(m => {
+      const label = m.params ? `${m.name} · ${m.params}` : m.name;
+      return `<button class="model-tab" data-model="${m.id}">${label}</button>`;
+    }).join('');
+    container.querySelectorAll('.model-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.modelId = btn.dataset.model;
+        highlightModelTab();
+        const page = state.pages.find(p => p.id === state.pageId);
+        if (page) loadOutput(page, state.modelId);
+      });
+    });
+  }
+
+  function updateModelTabs(page) {
+    $$('.model-tab').forEach(btn => {
+      const has = btn.dataset.model in page.outputs;
+      btn.classList.toggle('empty', !has);
+    });
+  }
+
+  function highlightModelTab() {
+    $$('.model-tab').forEach(btn =>
+      btn.classList.toggle('active', btn.dataset.model === state.modelId)
+    );
+  }
+
+  // --- Output Loading ---
+  async function loadOutput(page, modelId) {
+    const body = $('#output-body');
+    const meta = $('#output-meta');
+
+    if (!modelId || !(modelId in page.outputs)) {
+      meta.innerHTML = '';
+      body.innerHTML = '<div class="output-empty">No output for this model</div>';
+      return;
+    }
+
+    const output = page.outputs[modelId];
+    const path = output.textPath;
+
+    // Meta chips
+    const chips = [];
+    if (output.chars != null) chips.push(`<span class="meta-chip">${output.chars.toLocaleString()} chars</span>`);
+    if (output.timeSec != null) chips.push(`<span class="meta-chip">${output.timeSec}s</span>`);
+    if (output.format) chips.push(`<span class="meta-chip">${output.format}</span>`);
+    if (output.empty) chips.push(`<span class="meta-chip error">empty</span>`);
+    if (output.error) chips.push(`<span class="meta-chip error">error</span>`);
+    if (output.rotation != null) chips.push(`<span class="meta-chip amber">↻ ${output.rotation}°</span>`);
+    if (output.qualityScore != null) chips.push(`<span class="meta-chip amber">Q: ${output.qualityScore}</span>`);
+    if (output.strategy) chips.push(`<span class="meta-chip amber">${output.strategy}</span>`);
+    if (output.wholeDocument) chips.push(`<span class="meta-chip amber">whole doc</span>`);
+    meta.innerHTML = chips.join('');
+
+    // Fetch text
+    if (!state.cache[path]) {
+      try {
+        const resp = await fetch(path);
+        if (!resp.ok) throw new Error(`${resp.status}`);
+        state.cache[path] = await resp.text();
+      } catch (e) {
+        body.innerHTML = `<div class="output-empty" style="color:var(--error)">Failed to load: ${path}</div>`;
+        return;
+      }
+    }
+
+    let html = '';
+    if (output.wholeDocument) {
+      html += `<div class="output-warning">Marker outputs the entire document as one file. This is page ${output.pageNum} of the source PDF.</div>`;
+    }
+    html += `<pre class="output-text">${escapeHtml(state.cache[path])}</pre>`;
+    body.innerHTML = html;
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // --- Keyboard ---
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const list = state.filtered;
+      const idx = list.findIndex(p => p.id === state.pageId);
+      const next = e.key === 'ArrowDown'
+        ? Math.min(idx + 1, list.length - 1)
+        : Math.max(idx - 1, 0);
+      if (list[next]) selectPage(list[next].id);
+    }
+
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      const page = state.pages.find(p => p.id === state.pageId);
+      if (!page) return;
+      const available = state.models.filter(m => m.id in page.outputs);
+      const idx = available.findIndex(m => m.id === state.modelId);
+      const next = e.key === 'ArrowRight'
+        ? (idx + 1) % available.length
+        : (idx - 1 + available.length) % available.length;
+      if (available[next]) {
+        state.modelId = available[next].id;
+        highlightModelTab();
+        loadOutput(page, state.modelId);
+      }
+    }
+
+    if (e.key === '/' || (e.ctrlKey && e.key === 'f')) {
+      e.preventDefault();
+      $('#page-search').focus();
+    }
+  });
+
+  // --- Boot ---
+  document.addEventListener('DOMContentLoaded', init);
+})();
+</script>
+</body>
+</html>
